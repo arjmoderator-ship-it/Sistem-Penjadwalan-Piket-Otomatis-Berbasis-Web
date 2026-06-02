@@ -2,106 +2,28 @@
 
 <html lang="id" class="dark">
 
-<script type="module">
+<script>
+function saveData() {
+    localStorage.setItem('members', JSON.stringify(members));
+    localStorage.setItem('schedules', JSON.stringify(schedules));
+    localStorage.setItem('attendance', JSON.stringify(attendance));
+    localStorage.setItem('swapRequests', JSON.stringify(swapRequests));
+    localStorage.setItem('documentations', JSON.stringify(documentations));
+}
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+function loadData() {
+    const m = localStorage.getItem('members');
+    const s = localStorage.getItem('schedules');
+    const a = localStorage.getItem('attendance');
+    const sw = localStorage.getItem('swapRequests');
+    const d = localStorage.getItem('documentations');
 
-  import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-
-
-  const firebaseConfig = {
-
-    apiKey: "AIzaSyBoPnxPeLtAuBQk0qCGUI-G02eoRYtzhcI",
-
-    authDomain: "sistem-penjadwalan-piket-web.firebaseapp.com",
-
-    projectId: "sistem-penjadwalan-piket-web",
-
-    storageBucket: "sistem-penjadwalan-piket-web.firebasestorage.app",
-
-    messagingSenderId: "197652549687",
-
-    appId: "1:197652549687:web:a7a3aac30043c5c4c06fb2",
-
-    measurementId: "G-ERVWY88T8R"
-
-  };
-
-
-
-  const app = initializeApp(firebaseConfig);
-
-  const db = getFirestore(app);
-
-
-
-  // Fungsi global agar bisa dipanggil dari HTML
-
-  window.kirimDataKeDatabase = async function() {
-
-      try {
-
-          const docRef = await addDoc(collection(db, "members"), {
-
-              name: "Contoh Siswa",
-
-              jk: "L",
-
-              status: "Nyapu",
-
-              createdAt: new Date()
-
-          });
-
-          console.log("Data berhasil dikirim dengan ID: ", docRef.id);
-
-      } catch (e) {
-
-          console.error("Gagal mengirim data: ", e);
-
-      }
-
-  }
-
-
-
-// Fungsi untuk mengambil data secara real-time dan menampilkannya
-
-  onSnapshot(collection(db, "members"), (snapshot) => {
-
-    const listContainer = document.getElementById('today-duty-list');
-
-    listContainer.innerHTML = ''; // Kosongkan daftar sebelum diisi ulang
-
-
-
-    snapshot.forEach((doc) => {
-
-      const data = doc.data();
-
-      
-
-      // Membuat elemen HTML untuk setiap data
-
-      const div = document.createElement('div');
-
-      div.className = "flex justify-between items-center text-xs p-2 bg-slate-900 rounded-lg border border-slate-800";
-
-      div.innerHTML = `
-
-        <span class="font-medium text-slate-200">${data.name || 'Tanpa Nama'}</span>
-
-        <span class="text-indigo-400 font-bold">${data.status || '-'}</span>
-
-      `;
-
-      listContainer.appendChild(div);
-
-    });
-
-  });
-
+    if (m) members = JSON.parse(m);
+    if (s) schedules = JSON.parse(s);
+    if (a) attendance = JSON.parse(a);
+    if (sw) swapRequests = JSON.parse(sw);
+    if (d) documentations = JSON.parse(d);
+}
 </script>
 
 <head>
@@ -1119,6 +1041,9 @@
                 status: 'Disetujui' 
             }
         ];
+
+        loadData();
+        renderApp();
 
         // -------------------------------------------------------------
         // ROLE CONTROLLERS & AUTHENTICATION
