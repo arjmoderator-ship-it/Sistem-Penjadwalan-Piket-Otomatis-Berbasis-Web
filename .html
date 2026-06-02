@@ -1,469 +1,1037 @@
 <!DOCTYPE html>
+
 <html lang="id" class="dark">
+
+<script type="module">
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+
+  import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+
+
+  const firebaseConfig = {
+
+    apiKey: "AIzaSyBoPnxPeLtAuBQk0qCGUI-G02eoRYtzhcI",
+
+    authDomain: "sistem-penjadwalan-piket-web.firebaseapp.com",
+
+    projectId: "sistem-penjadwalan-piket-web",
+
+    storageBucket: "sistem-penjadwalan-piket-web.firebasestorage.app",
+
+    messagingSenderId: "197652549687",
+
+    appId: "1:197652549687:web:a7a3aac30043c5c4c06fb2",
+
+    measurementId: "G-ERVWY88T8R"
+
+  };
+
+
+
+  const app = initializeApp(firebaseConfig);
+
+  const db = getFirestore(app);
+
+
+
+  // Fungsi global agar bisa dipanggil dari HTML
+
+  window.kirimDataKeDatabase = async function() {
+
+      try {
+
+          const docRef = await addDoc(collection(db, "members"), {
+
+              name: "Contoh Siswa",
+
+              jk: "L",
+
+              status: "Nyapu",
+
+              createdAt: new Date()
+
+          });
+
+          console.log("Data berhasil dikirim dengan ID: ", docRef.id);
+
+      } catch (e) {
+
+          console.error("Gagal mengirim data: ", e);
+
+      }
+
+  }
+
+
+
+// Fungsi untuk mengambil data secara real-time dan menampilkannya
+
+  onSnapshot(collection(db, "members"), (snapshot) => {
+
+    const listContainer = document.getElementById('today-duty-list');
+
+    listContainer.innerHTML = ''; // Kosongkan daftar sebelum diisi ulang
+
+
+
+    snapshot.forEach((doc) => {
+
+      const data = doc.data();
+
+      
+
+      // Membuat elemen HTML untuk setiap data
+
+      const div = document.createElement('div');
+
+      div.className = "flex justify-between items-center text-xs p-2 bg-slate-900 rounded-lg border border-slate-800";
+
+      div.innerHTML = `
+
+        <span class="font-medium text-slate-200">${data.name || 'Tanpa Nama'}</span>
+
+        <span class="text-indigo-400 font-bold">${data.status || '-'}</span>
+
+      `;
+
+      listContainer.appendChild(div);
+
+    });
+
+  });
+
+</script>
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>SiPiket - Sistem Informasi Piket Kelas X PPLG 1 (Kelompok 5)</title>
+
     <!-- Tailwind CSS CDN -->
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <!-- Google Fonts -->
+
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+
         body {
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
         }
+
         /* Custom Scrollbar */
+
         ::-webkit-scrollbar {
+
             width: 6px;
+
             height: 6px;
+
         }
+
         ::-webkit-scrollbar-track {
+
             background: #1e293b;
+
         }
+
         ::-webkit-scrollbar-thumb {
+
             background: #4f46e5;
+
             border-radius: 10px;
+
         }
+
         ::-webkit-scrollbar-thumb:hover {
+
             background: #6366f1;
+
         }
+
     </style>
+
 </head>
+
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
+
+
     <!-- TOP BAR / NAVIGATION -->
+
     <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+
         <div class="flex items-center space-x-3">
+
             <div class="p-2.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-600/30">
+
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+
             </div>
+
             <div>
+
                 <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
+
                     SiPiket <span class="bg-indigo-500/10 text-indigo-400 text-xs px-2 py-0.5 rounded-full border border-indigo-500/20">X PPLG 1</span>
+
                 </h1>
+
                 <p class="text-xs text-slate-400">SMK Cibitung 1 • TP 2025/2026 • Kelompok 5</p>
+
             </div>
+
         </div>
+
+
 
         <!-- SIMULASI ROLE SWITCHER & LOGIN / OUT -->
+
         <div class="flex items-center bg-slate-950 border border-slate-800 rounded-xl p-1.5 shadow-inner">
+
             <span class="text-xs text-slate-400 font-medium px-2.5">Mode:</span>
+
             <div id="role-badge" class="px-3 py-1 bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 rounded-lg text-xs font-semibold mr-2 flex items-center gap-1">
+
                 🧑‍🎓 Anggota
+
             </div>
+
             <button id="btn-login-trigger" onclick="openLoginModal()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 hover:bg-indigo-500 text-white shadow">
+
                 🛡️ Login Admin
+
             </button>
+
             <button id="btn-logout-trigger" onclick="logoutAdmin()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-red-600 hover:bg-red-500 text-white shadow hidden">
+
                 🚪 Keluar Admin
+
             </button>
+
         </div>
+
     </header>
 
+
+
     <!-- MAIN APP WRAPPER -->
+
     <main class="flex-grow p-4 md:p-8 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+
         
+
         <!-- COLUMN LEFT: MENU & MEMBERS / ACTIONS (4 COLS) -->
+
         <section class="lg:col-span-4 space-y-6 flex flex-col">
+
             
+
             <!-- INFORMASI AKTIF & NOTIFIKASI -->
+
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+
                 <div class="flex items-center justify-between">
+
                     <h3 class="font-bold text-slate-400 text-sm tracking-wide uppercase">💡 Hari Ini</h3>
+
                     <span id="current-day-badge" class="bg-indigo-500/10 text-indigo-400 text-xs font-semibold px-2.5 py-1 rounded-full border border-indigo-500/20">Senin</span>
+
                 </div>
+
                 <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-850">
+
                     <p class="text-xs text-slate-400 font-semibold">Petugas Piket Hari Ini:</p>
+
                     <div id="today-duty-list" class="mt-2 space-y-1.5 max-h-[180px] overflow-y-auto pr-1">
+
                         <!-- Diisi secara dinamis -->
+
                     </div>
+
                 </div>
+
                 
+
                 <!-- Menu Cepat Admin (Tampil Hanya jika Role Admin) -->
+
                 <div id="admin-quick-actions" class="space-y-2.5 pt-2 hidden">
+
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Menu Admin</span>
+
                     <button onclick="triggerLottery()" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition-all shadow-lg shadow-indigo-600/20">
+
                         <span>⚡ Acak Ulang Jadwal (Undian Adil)</span>
+
                     </button>
+
                     <button onclick="openAddMemberModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 border border-slate-700 transition-all">
+
                         <span>➕ Tambah Anggota Baru</span>
+
                     </button>
+
                 </div>
+
+
 
                 <!-- Menu Cepat Anggota (Tampil Hanya jika Role Anggota) -->
+
                 <div id="anggota-quick-actions" class="space-y-2.5 pt-2">
+
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Menu Mandiri Anggota</span>
+
                     <button onclick="openSwapRequestModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 border border-slate-700 transition-all">
+
                         <span>🔄 Ajukan Tukar Hari Piket</span>
+
                     </button>
+
                     <button onclick="openUploadDocModal()" class="w-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 border border-indigo-500/30 transition-all">
+
                         <span>📸 Unggah Dokumentasi Piket</span>
+
                     </button>
+
                     <button onclick="exitApplication()" class="w-full bg-red-950/40 hover:bg-red-900/30 text-red-400 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 border border-red-500/20 transition-all">
+
                         <span>🚪 Keluar dari Web</span>
+
                     </button>
+
                 </div>
+
             </div>
+
+
 
             <!-- TABEL ANGGOTA -->
+
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex-grow flex flex-col justify-between min-h-[400px]">
+
                 <div class="space-y-4">
+
                     <div class="flex items-center justify-between">
+
                         <h3 class="font-bold text-slate-400 text-sm tracking-wide uppercase">👥 Peserta Didik (<span id="member-count">0</span>)</h3>
+
                         <span class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded-md" id="active-member-ratio">0/0 Aktif</span>
+
                     </div>
+
                     <div class="overflow-y-auto max-h-[350px] pr-1 space-y-2 no-scrollbar" id="members-list-container">
+
                         <!-- Diisi secara dinamis -->
+
                     </div>
+
                 </div>
+
                 <div class="pt-4 border-t border-slate-800 text-center text-xs text-slate-500">
+
                     Dikembangkan oleh Kelompok 5
+
                 </div>
+
             </div>
 
+
+
         </section>
+
+
 
         <!-- COLUMN RIGHT: MAIN SCHEDULE & SWAPS (8 COLS) -->
+
         <section class="lg:col-span-8 space-y-6">
 
+
+
             <!-- STATISTIK KINERJA RINGKAS -->
+
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow flex items-center space-x-3.5">
+
                     <div class="p-2.5 bg-emerald-500/10 rounded-lg text-emerald-400 border border-emerald-500/20">
+
                         ✅
+
                     </div>
+
                     <div>
+
                         <p class="text-[10px] uppercase font-bold text-slate-400">Total Hadir</p>
+
                         <h4 class="text-xl font-bold text-white" id="stat-hadir">0</h4>
+
                     </div>
+
                 </div>
+
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow flex items-center space-x-3.5">
+
                     <div class="p-2.5 bg-red-500/10 rounded-lg text-red-400 border border-red-500/20">
+
                         ❌
+
                     </div>
+
                     <div>
+
                         <p class="text-[10px] uppercase font-bold text-slate-400">Total Alpa</p>
+
                         <h4 class="text-xl font-bold text-white" id="stat-alpa">0</h4>
+
                     </div>
+
                 </div>
+
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow flex items-center space-x-3.5">
+
                     <div class="p-2.5 bg-indigo-500/10 rounded-lg text-indigo-400 border border-indigo-500/20">
+
                         📅
+
                     </div>
+
                     <div>
+
                         <p class="text-[10px] uppercase font-bold text-slate-400">Hari Kerja</p>
+
                         <h4 class="text-xl font-bold text-white">Senin - Jumat</h4>
+
                     </div>
+
                 </div>
+
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow flex items-center space-x-3.5">
+
                     <div class="p-2.5 bg-cyan-500/10 rounded-lg text-cyan-400 border border-cyan-500/20">
+
                         🔄
+
                     </div>
+
                     <div>
+
                         <p class="text-[10px] uppercase font-bold text-slate-400">Tukar Jadwal</p>
+
                         <h4 class="text-xl font-bold text-white" id="stat-swaps">0</h4>
+
                     </div>
+
                 </div>
+
             </div>
+
+
 
             <!-- JADWAL UTAMA (SENIN - JUMAT) -->
+
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+
                     <div>
+
                         <h2 class="text-lg font-extrabold text-white">Jadwal Piket Mingguan X PPLG 1</h2>
+
                         <p class="text-xs text-slate-400">Dibagi rata secara adil (35 siswa: masing-masing hari berisi tepat 7 anak).</p>
+
                     </div>
+
                     <div class="flex items-center space-x-2">
+
                         <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+
                         <span class="text-xs text-slate-300">Sistem Jobdesk Merata</span>
+
                     </div>
+
                 </div>
+
+
 
                 <!-- WEEK GRID -->
+
                 <div class="grid grid-cols-1 xl:grid-cols-5 gap-4" id="weekly-schedule-grid">
+
                     <!-- Kolom Hari akan dirender dinamis di sini -->
+
                 </div>
+
             </div>
+
+
 
             <!-- BOX PERMOHONAN TUKAR JADWAL (SWAP REQUESTS) -->
+
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+
                 <div class="flex items-center justify-between">
+
                     <div>
+
                         <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+
                             🔄 Permohonan Tukar Hari Piket
+
                             <span id="swap-badge-count" class="bg-indigo-500/20 text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-full">0 Pending</span>
+
                         </h3>
+
                         <p class="text-xs text-slate-400">Menjaga keseimbangan pembagian kerja tanpa merusak distribusi kuota harian.</p>
+
                     </div>
+
                 </div>
+
+
 
                 <!-- Swap List -->
+
                 <div class="space-y-3" id="swap-requests-list">
+
                     <!-- Diisi secara dinamis -->
+
                 </div>
+
             </div>
+
+
 
             <!-- BOX DOKUMENTASI PIKET -->
+
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+
                     <div>
+
                         <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+
                             📸 Galeri Dokumentasi Piket
+
                             <span id="doc-badge-count" class="bg-indigo-500/20 text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-full">0 Berkas</span>
+
                         </h3>
+
                         <p class="text-xs text-slate-400">Bukti foto hasil pengerjaan piket kelas X PPLG 1 hari ini.</p>
+
                     </div>
+
                     <button onclick="openUploadDocModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold py-2 px-4 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-indigo-600/25">
+
                         <span>📤 Unggah Bukti</span>
+
                     </button>
+
                 </div>
+
+
 
                 <!-- Gallery Grid -->
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="documentation-gallery">
+
                     <!-- Diisi secara dinamis -->
+
                 </div>
+
             </div>
 
+
+
         </section>
+
+
 
     </main>
 
+
+
     <!-- FOOTER -->
+
     <footer class="bg-slate-900 border-t border-slate-850 py-4 px-6 md:px-8 text-center text-xs text-slate-500 flex flex-col md:flex-row items-center justify-between gap-2">
+
         <p>© 2026 SiPiket X PPLG 1 • SMK Cibitung 1.</p>
+
         <p class="font-semibold text-slate-400">Didesain & Dikembangkan Oleh Kelompok 5</p>
+
     </footer>
 
+
+
     <!-- LOTTERY MACHINE MODAL (ACAK PIKET) -->
+
     <div id="lottery-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+
         <div class="bg-slate-900 border border-indigo-500/30 rounded-2xl max-w-lg w-full p-6 text-center space-y-6 shadow-2xl shadow-indigo-500/10">
+
             <div class="space-y-2">
+
                 <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Undian Piket Adil X PPLG 1</h3>
+
                 <p class="text-xs text-slate-400">Mengacak otomatis urutan 35 siswa agar pembagian hari & jobdesk seimbang...</p>
+
             </div>
+
             
+
             <!-- Wheel/Animation Simulation Box -->
+
             <div class="bg-slate-950 border border-slate-800 p-8 rounded-xl relative overflow-hidden flex flex-col items-center justify-center min-h-[160px]">
+
                 <div class="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-slate-950 to-transparent"></div>
+
                 <div class="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-slate-950 to-transparent"></div>
+
                 
+
                 <!-- Rotating Names -->
+
                 <div id="lottery-animation-name" class="text-2xl font-bold text-white tracking-wide transition-all duration-75">
+
                     MENGALIRKAN DATA...
+
                 </div>
+
                 <div id="lottery-subtext" class="text-xs text-indigo-400 mt-2 font-medium">
+
                     Menganalisis Keadilan Distribusi
+
                 </div>
+
             </div>
+
+
 
             <!-- Loader Indicator -->
+
             <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
+
                 <div id="lottery-progress-bar" class="bg-gradient-to-r from-indigo-500 to-cyan-400 h-full w-0 transition-all duration-300"></div>
+
             </div>
+
+
 
             <p class="text-[11px] text-slate-500 italic">"Sistem memetakan 1 Penyapu Kiri, 1 Penyapu Kanan, sisanya merapikan bangku & mengantar MBG ke masjid secara merata."</p>
+
         </div>
+
     </div>
+
+
 
     <!-- MODAL: TAMBAH ANGGOTA -->
+
     <div id="add-member-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+
             <div class="flex items-center justify-between">
+
                 <h3 class="text-lg font-bold text-white">Tambah Anggota Piket</h3>
+
                 <button onclick="closeAddMemberModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+
             </div>
+
             <div class="space-y-4">
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Nama Lengkap</label>
+
                     <input type="text" id="new-member-name" placeholder="Contoh: BUDI SANTOSO" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+
                 </div>
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Jenis Kelamin</label>
+
                     <select id="new-member-jk" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+
                         <option value="L">Laki-laki (L)</option>
+
                         <option value="P">Perempuan (P)</option>
+
                     </select>
+
                 </div>
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Status Piket Awal</label>
+
                     <select id="new-member-status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+
                         <option value="Aktif">Aktif (Ikut Pengundian)</option>
+
                         <option value="Cuti">Cuti (Dilewati Sementara)</option>
+
                     </select>
+
                 </div>
+
             </div>
+
             <div class="flex justify-end space-x-3 pt-2">
+
                 <button onclick="closeAddMemberModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300">
+
                     Batal
+
                 </button>
+
                 <button onclick="saveNewMember()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20">
+
                     Simpan Anggota
+
                 </button>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <!-- MODAL: AJUKAN TUKAR JADWAL -->
+
     <div id="swap-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+
             <div class="flex items-center justify-between">
+
                 <h3 class="text-lg font-bold text-white">Ajukan Penukaran Hari Piket</h3>
+
                 <button onclick="closeSwapModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+
             </div>
+
             <div class="space-y-4">
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Pilih Diri Anda</label>
+
                     <select id="swap-sender-select" onchange="updateSenderDays()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+
                         <option value="">-- Pilih Anggota --</option>
+
                         <!-- Diisi secara dinamis -->
+
                     </select>
+
                 </div>
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Hari & Tugas Piket Anda Saat Ini</label>
+
                     <input type="text" id="swap-sender-day-display" class="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed" readonly placeholder="Pilih anggota untuk memuat hari">
+
                 </div>
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Pilih Rekan Kerja Target Penukaran</label>
+
                     <select id="swap-receiver-select" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+
                         <option value="">-- Pilih Rekan Penukar --</option>
+
                         <!-- Diisi secara dinamis -->
+
                     </select>
+
                 </div>
+
             </div>
+
             <div class="flex justify-end space-x-3 pt-2">
+
                 <button onclick="closeSwapModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300">
+
                     Batal
+
                 </button>
+
                 <button onclick="submitSwapRequest()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20">
+
                     Kirim Permohonan
+
                 </button>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <!-- MODAL: UNGGAH DOKUMENTASI -->
+
     <div id="upload-doc-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+
             <div class="flex items-center justify-between">
+
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">📸 Unggah Laporan Piket</h3>
+
                 <button onclick="closeUploadDocModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+
             </div>
+
             <div class="space-y-4">
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Pilih Petugas Piket</label>
+
                     <select id="doc-member-select" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+
                         <option value="">-- Pilih Anggota Piket --</option>
+
                         <!-- Diisi secara dinamis -->
+
                     </select>
+
                 </div>
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Foto Bukti Kebersihan</label>
+
                     <input type="file" id="doc-image-input" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-400 focus:outline-none focus:border-indigo-500 file:mr-4 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-indigo-600/10 file:text-indigo-400 file:cursor-pointer hover:file:bg-indigo-600/20">
+
                 </div>
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Catatan Laporan / Jobdesk</label>
+
                     <textarea id="doc-notes" rows="3" placeholder="Contoh: Pojok kanan sudah disapu bersih dan MBG sudah diantarkan ke Masjid Al-Ikhlas." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 resize-none"></textarea>
+
                 </div>
+
             </div>
+
             <div class="flex justify-end space-x-3 pt-2">
+
                 <button onclick="closeUploadDocModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300">
+
                     Batal
+
                 </button>
+
                 <button onclick="submitDocumentation()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20">
+
                     Unggah Laporan
+
                 </button>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <!-- MODAL: LOGIN SECURITY ADMIN -->
+
     <div id="login-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+
             <div class="flex items-center justify-between">
+
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">🛡️ Verifikasi Sandi Admin</h3>
+
                 <button onclick="closeLoginModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+
             </div>
+
             <p class="text-xs text-slate-400">Gunakan username <span class="text-indigo-400 font-mono">admin</span> dan password <span class="text-indigo-400 font-mono">admin123</span> untuk masuk ke menu manajemen.</p>
+
             <div class="space-y-4">
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Username</label>
+
                     <input type="text" id="login-username" placeholder="Masukkan Username" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+
                 </div>
+
                 <div>
+
                     <label class="block text-xs text-slate-400 font-semibold mb-1.5">Password</label>
+
                     <input type="password" id="login-password" placeholder="Masukkan Password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+
                 </div>
+
             </div>
+
             <div class="flex justify-end space-x-3 pt-2">
+
                 <button onclick="closeLoginModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300">
+
                     Batal
+
                 </button>
+
                 <button onclick="submitAdminLogin()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20">
+
                     Masuk Dashboard
+
                 </button>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <!-- MODAL: KELUAR APLIKASI (GOODBYE SCREEN) -->
+
     <div id="exit-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+
         <div class="bg-slate-900 border border-red-500/30 rounded-2xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl shadow-red-500/10">
+
             <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto text-3xl">
+
                 🚪
+
             </div>
+
             <div class="space-y-2">
+
                 <h3 class="text-xl font-bold text-white">Sesi Anda Telah Berakhir</h3>
+
                 <p class="text-xs text-slate-400">Terima kasih telah menggunakan sistem informasi **SiPiket X PPLG 1 (Kelompok 5)**. Anda telah keluar dari web secara aman.</p>
+
             </div>
+
             <button onclick="restartApp()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl text-xs transition-all shadow-lg shadow-indigo-600/20">
+
                 🔄 Masuk Kembali ke Dashboard
+
             </button>
+
         </div>
+
     </div>
+
+
 
     <!-- NOTIFICATION SYSTEM TOAST -->
+
     <div id="app-toast" class="fixed bottom-6 right-6 bg-slate-900 border border-indigo-500/30 text-white text-xs px-4 py-3.5 rounded-xl shadow-2xl flex items-center space-x-3.5 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
+
         <div id="toast-icon-box" class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg">
+
             🔔
+
         </div>
+
         <div>
+
             <p id="toast-message" class="font-medium text-slate-200">Notifikasi sukses</p>
+
         </div>
+
     </div>
 
+
+
     <!-- CORE SYSTEM SCRIPT -->
+
     <script>
+
         // State management
+
         let currentRole = 'anggota'; // default view
+
         const DAYS = [
+
             { id: 1, name: 'Senin' },
+
             { id: 2, name: 'Selasa' },
+
             { id: 3, name: 'Rabu' },
+
             { id: 4, name: 'Kamis' },
+
             { id: 5, name: 'Jumat' }
+
         ];
 
+
+
         // Seed 35 Real Students
+
         let members = [
+
             { id: 1, name: 'ABDILLAH IMNI ISMAIL AL AMIN', jk: 'L', status: 'Aktif' },
+
             { id: 3, name: 'AISYAH KHANZA SALSABILA', jk: 'P', status: 'Aktif' },
+
             { id: 4, name: 'ANNISA NUR HADI', jk: 'P', status: 'Aktif' },
+
             { id: 5, name: 'AYUDHIA KHAILA DAVA', jk: 'P', status: 'Aktif' },
+
             { id: 6, name: 'BAGUS PRATAMA HIDAYAT', jk: 'L', status: 'Aktif' },
+
             { id: 7, name: 'BELVANA RASITA', jk: 'P', status: 'Aktif' },
+
             { id: 8, name: 'CARISSA TINOV ANASTACIA TAME', jk: 'P', status: 'Aktif' },
+
             { id: 9, name: 'CHARISA DIAN MAHRI', jk: 'P', status: 'Aktif' },
+
             { id: 10, name: 'DIANA ALIA SAFITRI', jk: 'P', status: 'Aktif' },
+
             { id: 11, name: 'DIO WAHAB ASSYIFA\'A', jk: 'L', status: 'Aktif' },
+
             { id: 12, name: 'FADLAN ABDILLAH', jk: 'L', status: 'Aktif' },
+
             { id: 13, name: 'FAOZAN SIGIT SAPUTRA', jk: 'L', status: 'Aktif' },
+
             { id: 14, name: 'FEBRYAN MAULANA', jk: 'L', status: 'Aktif' },
+
             { id: 15, name: 'FLOINTONA AZZAHRA', jk: 'P', status: 'Aktif' },
+
             { id: 16, name: 'HAFIDZ ANNAS', jk: 'L', status: 'Aktif' },
+
             { id: 17, name: 'IDZHAR SETYA IKHWANA', jk: 'L', status: 'Aktif' },
+
             { id: 18, name: 'JESIKA YULIANA', jk: 'P', status: 'Aktif' },
+
             { id: 19, name: 'KARINA AGUSTINA RAMADHANI', jk: 'P', status: 'Aktif' },
+
             { id: 20, name: 'LATHIFAH LINTANG SETITI PRASE', jk: 'P', status: 'Aktif' },
+
             { id: 21, name: 'LOUIS ENGRASIA PUTRI', jk: 'P', status: 'Aktif' },
             { id: 22, name: 'M. RAFKA FILANTARA', jk: 'L', status: 'Aktif' },
             { id: 23, name: 'MADINA AULIA HASANAH', jk: 'P', status: 'Aktif' },
@@ -1294,30 +1862,6 @@
         window.onload = function() {
             renderApp();
         }
-    </script>
-  <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Konfigurasi
-        const firebaseConfig = { /* isi config Anda */ };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Logic Fetching Data
-        onSnapshot(collection(db, "members"), (snapshot) => {
-            const listContainer = document.getElementById('today-duty-list');
-            if (listContainer) { // Pastikan elemen ada
-                listContainer.innerHTML = '';
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const div = document.createElement('div');
-                    div.className = "flex justify-between items-center text-xs p-2 bg-slate-900 rounded-lg border border-slate-800";
-                    div.innerHTML = `<span>${data.name}</span><span>${data.status}</span>`;
-                    listContainer.appendChild(div);
-                });
-            }
-        });
     </script>
 </body>
 </body>
