@@ -2,106 +2,28 @@
 
 <html lang="id" class="dark">
 
-<script type="module">
+<script>
+function saveData() {
+    localStorage.setItem('members', JSON.stringify(members));
+    localStorage.setItem('schedules', JSON.stringify(schedules));
+    localStorage.setItem('attendance', JSON.stringify(attendance));
+    localStorage.setItem('swapRequests', JSON.stringify(swapRequests));
+    localStorage.setItem('documentations', JSON.stringify(documentations));
+}
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+function loadData() {
+    const m = localStorage.getItem('members');
+    const s = localStorage.getItem('schedules');
+    const a = localStorage.getItem('attendance');
+    const sw = localStorage.getItem('swapRequests');
+    const d = localStorage.getItem('documentations');
 
-  import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-
-
-  const firebaseConfig = {
-
-    apiKey: "AIzaSyBoPnxPeLtAuBQk0qCGUI-G02eoRYtzhcI",
-
-    authDomain: "sistem-penjadwalan-piket-web.firebaseapp.com",
-
-    projectId: "sistem-penjadwalan-piket-web",
-
-    storageBucket: "sistem-penjadwalan-piket-web.firebasestorage.app",
-
-    messagingSenderId: "197652549687",
-
-    appId: "1:197652549687:web:a7a3aac30043c5c4c06fb2",
-
-    measurementId: "G-ERVWY88T8R"
-
-  };
-
-
-
-  const app = initializeApp(firebaseConfig);
-
-  const db = getFirestore(app);
-
-
-
-  // Fungsi global agar bisa dipanggil dari HTML
-
-  window.kirimDataKeDatabase = async function() {
-
-      try {
-
-          const docRef = await addDoc(collection(db, "members"), {
-
-              name: "Contoh Siswa",
-
-              jk: "L",
-
-              status: "Nyapu",
-
-              createdAt: new Date()
-
-          });
-
-          console.log("Data berhasil dikirim dengan ID: ", docRef.id);
-
-      } catch (e) {
-
-          console.error("Gagal mengirim data: ", e);
-
-      }
-
-  }
-
-
-
-// Fungsi untuk mengambil data secara real-time dan menampilkannya
-
-  onSnapshot(collection(db, "members"), (snapshot) => {
-
-    const listContainer = document.getElementById('today-duty-list');
-
-    listContainer.innerHTML = ''; // Kosongkan daftar sebelum diisi ulang
-
-
-
-    snapshot.forEach((doc) => {
-
-      const data = doc.data();
-
-      
-
-      // Membuat elemen HTML untuk setiap data
-
-      const div = document.createElement('div');
-
-      div.className = "flex justify-between items-center text-xs p-2 bg-slate-900 rounded-lg border border-slate-800";
-
-      div.innerHTML = `
-
-        <span class="font-medium text-slate-200">${data.name || 'Tanpa Nama'}</span>
-
-        <span class="text-indigo-400 font-bold">${data.status || '-'}</span>
-
-      `;
-
-      listContainer.appendChild(div);
-
-    });
-
-  });
-
+    if (m) members = JSON.parse(m);
+    if (s) schedules = JSON.parse(s);
+    if (a) attendance = JSON.parse(a);
+    if (sw) swapRequests = JSON.parse(sw);
+    if (d) documentations = JSON.parse(d);
+}
 </script>
 
 <head>
@@ -121,6 +43,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        /* RGB Border Animation */
+        .border-rgb {
+            position: relative;
+            background: #0f172a; /* Warna background kotak */
+            border-radius: 1rem;
+        }
+        .border-rgb::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            z-index: -1;
+            border-radius: 1.1rem;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            animation: glowing 20s linear infinite;
+        }
+        @keyframes glowing {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
 
         body {
 
@@ -238,7 +181,7 @@
 
             <!-- INFORMASI AKTIF & NOTIFIKASI -->
 
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+            <div class="bg-slate-900 border-rgb rounded-2xl p-5 shadow-xl space-y-4">
 
                 <div class="flex items-center justify-between">
 
@@ -316,7 +259,7 @@
 
             <!-- TABEL ANGGOTA -->
 
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex-grow flex flex-col justify-between min-h-[400px]">
+            <div class="bg-slate-900 border-rgb rounded-2xl p-5 shadow-xl flex-grow flex flex-col justify-between min-h-[400px]">
 
                 <div class="space-y-4">
 
@@ -360,7 +303,7 @@
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow flex items-center space-x-3.5">
+                <div class="bg-slate-900 border-rgb rounded-xl p-4 shadow flex items-center space-x-3.5">
 
                     <div class="p-2.5 bg-emerald-500/10 rounded-lg text-emerald-400 border border-emerald-500/20">
 
@@ -378,7 +321,7 @@
 
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow flex items-center space-x-3.5">
+                <div class="bg-slate-900 border-rgb rounded-xl p-4 shadow flex items-center space-x-3.5">
 
                     <div class="p-2.5 bg-red-500/10 rounded-lg text-red-400 border border-red-500/20">
 
@@ -396,7 +339,7 @@
 
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow flex items-center space-x-3.5">
+                <div class="bg-slate-900 border-rgb rounded-xl p-4 shadow flex items-center space-x-3.5">
 
                     <div class="p-2.5 bg-indigo-500/10 rounded-lg text-indigo-400 border border-indigo-500/20">
 
@@ -414,7 +357,7 @@
 
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow flex items-center space-x-3.5">
+                <div class="bg-slate-900 border-rgb rounded-xl p-4 shadow flex items-center space-x-3.5">
 
                     <div class="p-2.5 bg-cyan-500/10 rounded-lg text-cyan-400 border border-cyan-500/20">
 
@@ -438,7 +381,7 @@
 
             <!-- JADWAL UTAMA (SENIN - JUMAT) -->
 
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+            <div class="bg-slate-900 border-rgb rounded-2xl p-6 shadow-xl space-y-6">
 
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
@@ -476,7 +419,7 @@
 
             <!-- BOX PERMOHONAN TUKAR JADWAL (SWAP REQUESTS) -->
 
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+            <div class="bg-slate-900 border-rgb rounded-2xl p-6 shadow-xl space-y-4">
 
                 <div class="flex items-center justify-between">
 
@@ -512,7 +455,7 @@
 
             <!-- BOX DOKUMENTASI PIKET -->
 
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+            <div class="bg-slate-900 border-rgb rounded-2xl p-6 shadow-xl space-y-4">
 
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
@@ -576,7 +519,7 @@
 
     <div id="lottery-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
 
-        <div class="bg-slate-900 border border-indigo-500/30 rounded-2xl max-w-lg w-full p-6 text-center space-y-6 shadow-2xl shadow-indigo-500/10">
+        <div class="bg-slate-900 border-rgb rounded-2xl max-w-lg w-full p-6 text-center space-y-6 shadow-2xl shadow-indigo-500/10">
 
             <div class="space-y-2">
 
@@ -590,7 +533,7 @@
 
             <!-- Wheel/Animation Simulation Box -->
 
-            <div class="bg-slate-950 border border-slate-800 p-8 rounded-xl relative overflow-hidden flex flex-col items-center justify-center min-h-[160px]">
+            <div class="bg-slate-950 border-rgb p-8 rounded-xl relative overflow-hidden flex flex-col items-center justify-center min-h-[160px]">
 
                 <div class="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-slate-950 to-transparent"></div>
 
@@ -638,7 +581,7 @@
 
     <div id="add-member-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+        <div class="bg-slate-900 border-rgb rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
 
             <div class="flex items-center justify-between">
 
@@ -1119,6 +1062,9 @@
                 status: 'Disetujui' 
             }
         ];
+
+        loadData();
+        renderApp();
 
         // -------------------------------------------------------------
         // ROLE CONTROLLERS & AUTHENTICATION
@@ -1863,6 +1809,43 @@
             renderApp();
         }
     </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
-</body>
-</html>
+<!-- Code inject
