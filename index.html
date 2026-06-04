@@ -3,6 +3,16 @@
 <html lang="id" class="dark">
 
 <script>
+	function getDayName() {
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const now = new Date();
+    return days[now.getDay()];
+}
+
+function getDayId(dayName) {
+    const map = { 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5 };
+    return map[dayName] || 1;
+}
 function saveData() {
     localStorage.setItem('members', JSON.stringify(members));
     localStorage.setItem('schedules', JSON.stringify(schedules));
@@ -1567,6 +1577,34 @@ function loadData() {
             triggerToast(`👤 Sukses menambahkan ${name}!`, 'success');
             renderApp();
         }
+		function renderTodayStatus() {
+    const todayListContainer = document.getElementById('today-duty-list');
+    const badge = document.getElementById('current-day-badge');
+    
+    const dayName = getDayName(); // Mengambil hari realtime
+    const dayId = getDayId(dayName);
+    
+    badge.innerText = dayName; // Update badge di UI
+    
+    todayListContainer.innerHTML = '';
+    const todaySchedules = schedules.filter(s => s.id_hari === dayId);
+    
+    if (todaySchedules.length === 0) {
+        todayListContainer.innerHTML = `<p class="text-xs text-slate-500 italic">Tidak ada piket hari ini.</p>`;
+    } else {
+        todaySchedules.forEach(ts => {
+            const member = members.find(m => m.id === ts.id_anggota);
+            if (member) {
+                todayListContainer.innerHTML += `
+                    <div class="flex items-center justify-between text-xs py-1 border-b border-slate-850/40">
+                        <span class="text-slate-300 font-medium truncate max-w-[150px]">${member.name}</span>
+                        <span class="text-[10px] font-bold text-indigo-400">${ts.job.split(' ')[0]}</span>
+                    </div>
+                `;
+            }
+        });
+    }
+}
 
         // Toggle Status Aktif/Cuti Anggota
         function toggleMemberStatus(id) {
