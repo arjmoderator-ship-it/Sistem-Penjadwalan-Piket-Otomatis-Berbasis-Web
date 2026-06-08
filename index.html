@@ -53,19 +53,6 @@ function loadData() {
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-		/* CSS untuk Logo CISAT */
-.logo-container {
-display: flex;
-align-items: center;
-justify-content: center;
-width: 60px;
-height: 60px;
-background: linear-gradient(135deg, #4f46e5, #3730a3);
-border-radius: 12px;
-color: white;
-font-weight: 800;
-font-size: 24px;
-box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
         /* RGB Border Animation */
         .border-rgb {
             position: relative;
@@ -129,59 +116,6 @@ box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
 </head>
 
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
-
-	<!-- Logo yang diperbarui -->
-<div class="logo-container mx-auto mb-4">
-CP
-</div>
-<h1 class="text-3xl font-black text-white tracking-tight">CISAT</h1>
-<p class="text-slate-400 text-sm uppercase tracking-widest">SMK PK
-
-Cibitung 1</p>
-<p class="text-indigo-400
-
-<!-- HALAMAN LOGIN TERPADU -->
-<div id="login-page" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
-    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl w-full max-w-sm shadow-2xl">
-        <h2 class="text-xl font-bold text-white mb-6 text-center">Masuk ke SiPiket</h2>
-        
-        <!-- Tab Pemilih Peran -->
-        <div class="flex bg-slate-950 p-1 rounded-xl mb-6">
-            <button id="tab-siswa" onclick="setMode('siswa')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow">Siswa</button>
-            <button id="tab-admin" onclick="setMode('admin')" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white">Admin</button>
-        </div>
-
-        <div class="space-y-4">
-            <input type="text" placeholder="Username/NIS" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
-            <input type="password" placeholder="Password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
-            <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-indigo-600/20">Masuk Sekarang</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Flash Screen Logic
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.getElementById('flash-screen').style.opacity = '0';
-            setTimeout(() => document.getElementById('flash-screen').remove(), 700);
-        }, 3000);
-    });
-
-    // Toggle Mode Siswa/Admin
-    function setMode(mode) {
-        const siswaTab = document.getElementById('tab-siswa');
-        const adminTab = document.getElementById('tab-admin');
-        
-        if(mode === 'admin') {
-            adminTab.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow";
-            siswaTab.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white";
-        } else {
-            siswaTab.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow";
-            adminTab.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white";
-        }
-    }
-</script>
 
 
 
