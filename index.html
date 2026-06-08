@@ -53,6 +53,19 @@ function loadData() {
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+		/* CSS untuk Logo CISAT */
+.logo-container {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 60px;
+height: 60px;
+background: linear-gradient(135deg, #4f46e5, #3730a3);
+border-radius: 12px;
+color: white;
+font-weight: 800;
+font-size: 24px;
+box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
         /* RGB Border Animation */
         .border-rgb {
             position: relative;
@@ -117,19 +130,15 @@ function loadData() {
 
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
-	<!-- FLASH SCREEN -->
-<div id="flash-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-700">
-    <div class="text-center space-y-4 animate-pulse">
-        <div class="w-20 h-20 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-indigo-600/30">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-        </div>
-        <div>
-            <h1 class="text-2xl font-black text-white">CISAT</h1>
-            <p class="text-slate-400 text-sm">SMK Cibitung 1</p>
-            <p class="text-indigo-400 font-bold mt-2">Sistem Penjadwalan Piket Kelas & Kehadiran Murid</p>
-        </div>
-    </div>
+	<!-- Logo yang diperbarui -->
+<div class="logo-container mx-auto mb-4">
+CP
 </div>
+<h1 class="text-3xl font-black text-white tracking-tight">CISAT</h1>
+<p class="text-slate-400 text-sm uppercase tracking-widest">SMK PK
+
+Cibitung 1</p>
+<p class="text-indigo-400
 
 <!-- HALAMAN LOGIN TERPADU -->
 <div id="login-page" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
