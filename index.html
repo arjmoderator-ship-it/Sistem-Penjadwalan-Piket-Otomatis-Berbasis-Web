@@ -117,6 +117,63 @@ function loadData() {
 
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
+	<!-- FLASH SCREEN -->
+<div id="flash-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-700">
+    <div class="text-center space-y-4 animate-pulse">
+        <div class="w-20 h-20 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-indigo-600/30">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+        </div>
+        <div>
+            <h1 class="text-2xl font-black text-white">CISAT</h1>
+            <p class="text-slate-400 text-sm">SMK Cibitung 1</p>
+            <p class="text-indigo-400 font-bold mt-2">Sistem Penjadwalan Piket Kelas & Kehadiran Murid</p>
+        </div>
+    </div>
+</div>
+
+<!-- HALAMAN LOGIN TERPADU -->
+<div id="login-page" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
+    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl w-full max-w-sm shadow-2xl">
+        <h2 class="text-xl font-bold text-white mb-6 text-center">Masuk ke SiPiket</h2>
+        
+        <!-- Tab Pemilih Peran -->
+        <div class="flex bg-slate-950 p-1 rounded-xl mb-6">
+            <button id="tab-siswa" onclick="setMode('siswa')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow">Siswa</button>
+            <button id="tab-admin" onclick="setMode('admin')" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white">Admin</button>
+        </div>
+
+        <div class="space-y-4">
+            <input type="text" placeholder="Username/NIS" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
+            <input type="password" placeholder="Password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
+            <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-indigo-600/20">Masuk Sekarang</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Flash Screen Logic
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('flash-screen').style.opacity = '0';
+            setTimeout(() => document.getElementById('flash-screen').remove(), 700);
+        }, 3000);
+    });
+
+    // Toggle Mode Siswa/Admin
+    function setMode(mode) {
+        const siswaTab = document.getElementById('tab-siswa');
+        const adminTab = document.getElementById('tab-admin');
+        
+        if(mode === 'admin') {
+            adminTab.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow";
+            siswaTab.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white";
+        } else {
+            siswaTab.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow";
+            adminTab.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white";
+        }
+    }
+</script>
+
 
 
     <!-- TOP BAR / NAVIGATION -->
