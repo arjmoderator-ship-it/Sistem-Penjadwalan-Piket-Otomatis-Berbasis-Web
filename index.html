@@ -4,477 +4,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SiPiket - Sistem Informasi Piket Sekolah</title>
-    <!-- Tailwind CSS CDN -->
+    <title>SiPiket - Sistem Informasi Piket Digital</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .border-rgb {
-            position: relative;
-            background: #0f172a;
-            border-radius: 1rem;
-        }
-        .border-rgb::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            z-index: -1;
-            border-radius: 1.1rem;
-            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            background-size: 400%;
-            animation: glowing 20s linear infinite;
-        }
-        @keyframes glowing {
-            0% { background-position: 0 0; }
-            50% { background-position: 400% 0; }
-            100% { background-position: 0 0; }
-        }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4f46e5;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6366f1;
-        }
-        .class-card {
-            transition: all 0.2s ease;
-        }
-        .class-card:hover {
-            transform: translateY(-2px);
-            border-color: #6366f1;
-        }
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #0a0a1a; }
+        .glass-card { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(99, 102, 241, 0.2); }
+        .gradient-border { position: relative; background: #0f172a; border-radius: 1rem; }
+        .gradient-border::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8); background-size: 400%; border-radius: 1.1rem; z-index: -1; animation: glowing 15s linear infinite; }
+        @keyframes glowing { 0% { background-position: 0 0; } 100% { background-position: 400% 0; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+        .class-card { transition: all 0.2s ease; cursor: pointer; }
+        .class-card:hover { transform: translateY(-3px); border-color: #6366f1; background: rgba(99, 102, 241, 0.1); }
+        .tab-active { border-bottom: 2px solid #6366f1; color: #6366f1; }
+        .status-badge { padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .status-hadir { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-alpa { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
     </style>
 </head>
 
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="min-h-screen">
 
-    <!-- LOGIN SCREEN UTAMA (PILIH KELAS + NIS) -->
-    <div id="login-main-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950">
-        <div class="bg-slate-900/80 backdrop-blur-md border border-indigo-500/30 rounded-2xl shadow-2xl w-full max-w-4xl p-6 md:p-8">
+    <!-- ==================== LOGIN UTAMA (PILIH KELAS + NIS) ==================== -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950">
+        <div class="glass-card rounded-2xl shadow-2xl w-full max-w-5xl p-6 md:p-8">
             <div class="text-center mb-8">
-                <div class="inline-flex p-3 bg-indigo-600 rounded-2xl shadow-lg mb-4">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <div class="inline-flex p-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg mb-4">
+                    <i class="fas fa-chalkboard-user text-3xl text-white"></i>
                 </div>
-                <h1 class="text-3xl font-extrabold text-white">SiPiket Sekolah</h1>
-                <p class="text-slate-400 text-sm mt-2">Sistem Informasi Piket Digital | SMK Cibitung 1</p>
+                <h1 class="text-3xl font-extrabold text-white">SiPiket <span class="text-indigo-400">Digital</span></h1>
+                <p class="text-slate-400 text-sm mt-2">Sistem Informasi Piket Terintegrasi | SMK Cibitung 1</p>
             </div>
 
-            <!-- Pilih Kelas & Jurusan -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-slate-300 mb-2">🏫 Pilih Kelas & Jurusan</label>
-                <select id="class-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Panel Login Siswa -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                    <div class="flex items-center gap-2 text-indigo-400 mb-4">
+                        <i class="fas fa-user-graduate"></i>
+                        <h2 class="font-bold text-lg text-white">Login Siswa</h2>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-xs text-slate-400 mb-1">Pilih Kelas & Jurusan</label>
+                        <select id="studentClass" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm">
+                            <option value="">-- Pilih Kelas --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-xs text-slate-400 mb-1">NIS / Nomor Induk</label>
+                        <input type="text" id="studentNIS" placeholder="Masukkan NIS (contoh: 1-35)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm">
+                        <p class="text-[10px] text-slate-500 mt-1">* Untuk kelas selain X PPLG 1, nama ditampilkan sebagai "Absen [NIS]"</p>
+                    </div>
+                    
+                    <button onclick="studentLogin()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i> Masuk Dashboard
+                    </button>
+                </div>
+
+                <!-- Panel Login Admin -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                    <div class="flex items-center gap-2 text-purple-400 mb-4">
+                        <i class="fas fa-shield-alt"></i>
+                        <h2 class="font-bold text-lg text-white">Login Admin</h2>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-xs text-slate-400 mb-1">Username</label>
+                        <input type="text" id="adminUsername" placeholder="admin" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-xs text-slate-400 mb-1">Password</label>
+                        <input type="password" id="adminPassword" placeholder="••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm">
+                    </div>
+                    
+                    <button onclick="adminLogin()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fas fa-lock"></i> Masuk Panel Admin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DASHBOARD SISWA ==================== -->
+    <div id="siswaDashboard" class="hidden min-h-screen flex flex-col">
+        <!-- Navbar Siswa -->
+        <nav class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-indigo-600 rounded-xl"><i class="fas fa-calendar-alt text-white"></i></div>
+                <div>
+                    <h1 class="font-bold text-white">SiPiket <span id="siswaClassName" class="text-indigo-400 text-sm">10 PPLG 1</span></h1>
+                    <p class="text-xs text-slate-400" id="siswaNameDisplay">Loading...</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs bg-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full"><i class="fas fa-user mr-1"></i>Siswa</span>
+                <button onclick="logout()" class="bg-red-600/80 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-lg transition"><i class="fas fa-sign-out-alt mr-1"></i>Keluar</button>
+            </div>
+        </nav>
+
+        <main class="flex-grow p-4 md:p-8 max-w-7xl w-full mx-auto">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-slate-900 rounded-xl p-4 border border-slate-800">
+                    <div class="flex items-center gap-3"><div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400"><i class="fas fa-check-circle"></i></div><div><p class="text-[10px] text-slate-400">Hadir Hari Ini</p><p id="siswaHadirCount" class="text-xl font-bold text-white">0</p></div></div>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4 border border-slate-800">
+                    <div class="flex items-center gap-3"><div class="p-2 bg-red-500/10 rounded-lg text-red-400"><i class="fas fa-times-circle"></i></div><div><p class="text-[10px] text-slate-400">Alpa</p><p id="siswaAlpaCount" class="text-xl font-bold text-white">0</p></div></div>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4 border border-slate-800">
+                    <div class="flex items-center gap-3"><div class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400"><i class="fas fa-users"></i></div><div><p class="text-[10px] text-slate-400">Total Anggota</p><p id="siswaTotalAnggota" class="text-xl font-bold text-white">0</p></div></div>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4 border border-slate-800">
+                    <div class="flex items-center gap-3"><div class="p-2 bg-cyan-500/10 rounded-lg text-cyan-400"><i class="fas fa-image"></i></div><div><p class="text-[10px] text-slate-400">Dokumentasi</p><p id="siswaTotalDoc" class="text-xl font-bold text-white">0</p></div></div>
+                </div>
+            </div>
+
+            <!-- Jadwal Piket -->
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 mb-6">
+                <h2 class="text-lg font-bold text-white mb-4"><i class="fas fa-table-list mr-2 text-indigo-400"></i>Jadwal Piket Mingguan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="siswaScheduleGrid"></div>
+            </div>
+
+            <!-- Dokumentasi Saya -->
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-white"><i class="fas fa-camera mr-2 text-indigo-400"></i>Dokumentasi Piket</h2>
+                    <button onclick="openUploadModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-xl transition"><i class="fas fa-upload mr-1"></i>Unggah Bukti</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="siswaDocGallery"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== DASHBOARD ADMIN ==================== -->
+    <div id="adminDashboard" class="hidden min-h-screen flex flex-col">
+        <!-- Navbar Admin -->
+        <nav class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-purple-600 rounded-xl"><i class="fas fa-shield-alt text-white"></i></div>
+                <div><h1 class="font-bold text-white">Panel Admin SiPiket</h1><p class="text-xs text-slate-400">Manajemen Kelas & Piket</p></div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full"><i class="fas fa-crown mr-1"></i>Admin</span>
+                <button onclick="logout()" class="bg-red-600/80 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-lg transition"><i class="fas fa-sign-out-alt mr-1"></i>Keluar</button>
+            </div>
+        </nav>
+
+        <main class="flex-grow p-4 md:p-8 max-w-7xl w-full mx-auto">
+            <!-- Pilih Kelas Management -->
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 mb-6">
+                <h2 class="text-lg font-bold text-white mb-4"><i class="fas fa-school mr-2 text-purple-400"></i>Pilih Kelas untuk Dikelola</h2>
+                <select id="adminClassSelect" class="w-full md:w-96 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white" onchange="loadAdminClassData()">
                     <option value="">-- Pilih Kelas --</option>
                 </select>
             </div>
 
-            <!-- Form Login NIS -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-slate-300 mb-2">🔑 NIS / Nomor Induk Siswa</label>
-                <input type="text" id="nis-input" placeholder="Masukkan NIS (contoh: 001)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500">
-                <p class="text-xs text-slate-500 mt-2">* Untuk kelas selain X PPLG 1, gunakan NIS 1-35 (nama akan ditampilkan sebagai "Absen X")</p>
-            </div>
-
-            <!-- Login Admin Button terpisah -->
-            <div class="flex flex-col sm:flex-row gap-4 mt-6">
-                <button id="btn-student-login" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
-                    🚪 Masuk sebagai Siswa
-                </button>
-                <button id="btn-admin-login-trigger" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
-                    🛡️ Login Admin
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- LOGIN MODAL ADMIN (terpisah) -->
-    <div id="admin-login-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-indigo-500/30 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">🛡️ Verifikasi Admin</h3>
-                <button onclick="closeAdminLoginModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
-            </div>
-            <p class="text-xs text-slate-400">Gunakan username <span class="text-indigo-400 font-mono">admin</span> dan password <span class="text-indigo-400 font-mono">admin123</span></p>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs text-slate-400 font-semibold mb-1.5">Username</label>
-                    <input type="text" id="admin-username" placeholder="Username" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+            <div id="adminClassPanel" class="hidden">
+                <!-- Statistik Kelas -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                    <div class="bg-slate-900 rounded-xl p-3 text-center border border-slate-800"><p class="text-xs text-slate-400">Total Siswa</p><p id="adminTotalSiswa" class="text-xl font-bold text-white">0</p></div>
+                    <div class="bg-slate-900 rounded-xl p-3 text-center border border-slate-800"><p class="text-xs text-slate-400">Hadir</p><p id="adminTotalHadir" class="text-xl font-bold text-emerald-400">0</p></div>
+                    <div class="bg-slate-900 rounded-xl p-3 text-center border border-slate-800"><p class="text-xs text-slate-400">Alpa</p><p id="adminTotalAlpa" class="text-xl font-bold text-red-400">0</p></div>
+                    <div class="bg-slate-900 rounded-xl p-3 text-center border border-slate-800"><p class="text-xs text-slate-400">Dokumentasi</p><p id="adminTotalDoc" class="text-xl font-bold text-cyan-400">0</p></div>
+                    <div class="bg-slate-900 rounded-xl p-3 text-center border border-slate-800"><p class="text-xs text-slate-400">Pending</p><p id="adminTotalPending" class="text-xl font-bold text-amber-400">0</p></div>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 font-semibold mb-1.5">Password</label>
-                    <input type="password" id="admin-password" placeholder="Password" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
-                </div>
-            </div>
-            <div class="flex justify-end space-x-3 pt-2">
-                <button onclick="closeAdminLoginModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700">Batal</button>
-                <button onclick="submitAdminLogin()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white">Masuk Dashboard Admin</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- DASHBOARD UTAMA (Dinamis untuk semua kelas) -->
-    <div id="dashboard-app" class="hidden flex flex-col min-h-screen">
-        <!-- TOP BAR -->
-        <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="p-2.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-600/30">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                </div>
-                <div>
-                    <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
-                        SiPiket <span id="dashboard-class-badge" class="bg-indigo-500/10 text-indigo-400 text-xs px-2 py-0.5 rounded-full">X PPLG 1</span>
-                    </h1>
-                    <p class="text-xs text-slate-400">SMK Cibitung 1 • <span id="dashboard-student-name">Siswa</span></p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <div id="role-badge" class="px-3 py-1 bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 rounded-lg text-xs font-semibold">🧑‍🎓 Mode Siswa</div>
-                <button id="logout-main-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-red-600/80 hover:bg-red-500 text-white shadow">🚪 Keluar</button>
-            </div>
-        </header>
-
-        <main class="flex-grow p-4 md:p-8 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- LEFT SIDEBAR -->
-            <section class="lg:col-span-4 space-y-6">
-                <div class="bg-slate-900 border-rgb rounded-2xl p-5 shadow-xl space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-slate-400 text-sm tracking-wide uppercase">📅 Hari Ini</h3>
-                        <span id="current-day-badge" class="bg-indigo-500/10 text-indigo-400 text-xs font-semibold px-2.5 py-1 rounded-full">Senin</span>
+                <!-- Tab Menu Admin -->
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
+                    <div class="flex border-b border-slate-800">
+                        <button onclick="setAdminTab('anggota')" id="tabAnggotaBtn" class="tab-active px-5 py-3 text-sm font-medium transition">📋 Daftar Anggota</button>
+                        <button onclick="setAdminTab('jadwal')" id="tabJadwalBtn" class="px-5 py-3 text-sm font-medium text-slate-400 hover:text-white transition">📅 Atur Jadwal</button>
+                        <button onclick="setAdminTab('dokumentasi')" id="tabDokumentasiBtn" class="px-5 py-3 text-sm font-medium text-slate-400 hover:text-white transition">📸 Verifikasi Dokumentasi</button>
                     </div>
-                    <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800">
-                        <p class="text-xs text-slate-400 font-semibold">Petugas Piket Hari Ini:</p>
-                        <div id="today-duty-list" class="mt-2 space-y-1.5 max-h-[180px] overflow-y-auto pr-1"></div>
+
+                    <!-- Tab Anggota -->
+                    <div id="tabAnggota" class="p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-white">Manajemen Anggota Kelas</h3>
+                            <button onclick="openAddMemberModal()" class="bg-indigo-600 text-white text-sm px-3 py-1.5 rounded-lg"><i class="fas fa-plus mr-1"></i>Tambah Anggota</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="border-b border-slate-800"><tr><th class="text-left py-2 text-slate-400">#</th><th class="text-left py-2 text-slate-400">Nama</th><th class="text-left py-2 text-slate-400">JK</th><th class="text-left py-2 text-slate-400">Status</th><th class="text-left py-2 text-slate-400">Aksi</th></tr></thead>
+                                <tbody id="adminMembersTable"></tbody>
+                            </table>
+                        </div>
                     </div>
-                    <!-- Menu Anggota -->
-                    <div id="member-quick-actions" class="space-y-2.5 pt-2">
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Menu Siswa</span>
-                        <button onclick="openUploadDocModal()" class="w-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 border border-indigo-500/30 transition-all">
-                            <span>📸 Unggah Dokumentasi Piket</span>
-                        </button>
+
+                    <!-- Tab Jadwal -->
+                    <div id="tabJadwal" class="p-5 hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-white">Atur Jadwal Piket (Acak Merata)</h3>
+                            <button onclick="randomizeSchedule()" class="bg-purple-600 text-white text-sm px-3 py-1.5 rounded-lg"><i class="fas fa-random mr-1"></i>Acak Ulang Jadwal</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="adminScheduleGrid"></div>
+                    </div>
+
+                    <!-- Tab Dokumentasi -->
+                    <div id="tabDokumentasi" class="p-5 hidden">
+                        <h3 class="font-semibold text-white mb-4">Dokumentasi Menunggu Verifikasi</h3>
+                        <div class="space-y-4" id="adminDocList"></div>
                     </div>
                 </div>
-
-                <!-- TABEL ANGGOTA -->
-                <div class="bg-slate-900 border-rgb rounded-2xl p-5 shadow-xl flex-grow">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-slate-400 text-sm uppercase">👥 Daftar Kelas (<span id="member-count">0</span>)</h3>
-                    </div>
-                    <div class="overflow-y-auto max-h-[350px] pr-1 space-y-2" id="members-list-container"></div>
-                    <div class="pt-4 border-t border-slate-800 text-center text-xs text-slate-500 mt-4">Sistem Informasi Piket Digital</div>
-                </div>
-            </section>
-
-            <!-- RIGHT CONTENT -->
-            <section class="lg:col-span-8 space-y-6">
-                <!-- Stats -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-slate-900 border-rgb rounded-xl p-4"><div class="flex items-center space-x-3"><div class="p-2.5 bg-emerald-500/10 rounded-lg">✅</div><div><p class="text-[10px] uppercase font-bold text-slate-400">Total Hadir</p><h4 id="stat-hadir" class="text-xl font-bold">0</h4></div></div></div>
-                    <div class="bg-slate-900 border-rgb rounded-xl p-4"><div class="flex items-center space-x-3"><div class="p-2.5 bg-red-500/10 rounded-lg">❌</div><div><p class="text-[10px] uppercase font-bold text-slate-400">Total Alpa</p><h4 id="stat-alpa" class="text-xl font-bold">0</h4></div></div></div>
-                    <div class="bg-slate-900 border-rgb rounded-xl p-4"><div class="flex items-center space-x-3"><div class="p-2.5 bg-indigo-500/10 rounded-lg">📅</div><div><p class="text-[10px] uppercase font-bold text-slate-400">Hari Kerja</p><h4 class="text-xl font-bold">Senin-Jumat</h4></div></div></div>
-                    <div class="bg-slate-900 border-rgb rounded-xl p-4"><div class="flex items-center space-x-3"><div class="p-2.5 bg-cyan-500/10 rounded-lg">📸</div><div><p class="text-[10px] uppercase font-bold text-slate-400">Dokumentasi</p><h4 id="stat-docs" class="text-xl font-bold">0</h4></div></div></div>
-                </div>
-
-                <!-- Jadwal Piket -->
-                <div class="bg-slate-900 border-rgb rounded-2xl p-6 shadow-xl">
-                    <h2 class="text-lg font-extrabold text-white mb-4">📋 Jadwal Piket Mingguan</h2>
-                    <div class="grid grid-cols-1 xl:grid-cols-5 gap-4" id="weekly-schedule-grid"></div>
-                </div>
-
-                <!-- Galeri Dokumentasi -->
-                <div class="bg-slate-900 border-rgb rounded-2xl p-6 shadow-xl">
-                    <div class="flex justify-between items-center mb-4"><h3 class="text-base font-extrabold text-white">📸 Galeri Dokumentasi Piket</h3><button onclick="openUploadDocModal()" class="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-xl">+ Unggah</button></div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="documentation-gallery"></div>
-                </div>
-            </section>
+            </div>
         </main>
-        <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">© 2026 SiPiket • SMK Cibitung 1</footer>
     </div>
 
-    <!-- MODAL UNGGAH DOKUMENTASI -->
-    <div id="upload-doc-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-white">📸 Unggah Bukti Piket</h3>
-            <select id="doc-member-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm"></select>
-            <input type="file" id="doc-image-input" accept="image/*" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-sm">
-            <textarea id="doc-notes" rows="2" placeholder="Catatan jobdesk..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm"></textarea>
-            <div class="flex justify-end gap-2"><button onclick="closeUploadDocModal()" class="px-4 py-2 bg-slate-700 rounded-xl text-xs">Batal</button><button onclick="submitDocumentation()" class="px-4 py-2 bg-indigo-600 rounded-xl text-xs">Unggah</button></div>
+    <!-- Modal Tambah Anggota -->
+    <div id="addMemberModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 rounded-2xl max-w-md w-full p-6 border border-slate-700">
+            <h3 class="text-lg font-bold text-white mb-4">Tambah Anggota Baru</h3>
+            <input type="text" id="newMemberName" placeholder="Nama Lengkap" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 mb-3 text-white">
+            <select id="newMemberJK" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 mb-3 text-white"><option value="L">Laki-laki</option><option value="P">Perempuan</option></select>
+            <div class="flex justify-end gap-2"><button onclick="closeAddMemberModal()" class="px-4 py-2 bg-slate-700 rounded-lg">Batal</button><button onclick="addMember()" class="px-4 py-2 bg-indigo-600 rounded-lg">Simpan</button></div>
+        </div>
+    </div>
+
+    <!-- Modal Upload Dokumentasi -->
+    <div id="uploadModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 rounded-2xl max-w-md w-full p-6 border border-slate-700">
+            <h3 class="text-lg font-bold text-white mb-4">Unggah Dokumentasi Piket</h3>
+            <select id="uploadMemberId" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 mb-3 text-white"></select>
+            <input type="file" id="uploadImage" accept="image/*" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 mb-3 text-white text-sm">
+            <textarea id="uploadNotes" rows="3" placeholder="Catatan pekerjaan yang telah dilakukan..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 mb-3 text-white text-sm"></textarea>
+            <div class="flex justify-end gap-2"><button onclick="closeUploadModal()" class="px-4 py-2 bg-slate-700 rounded-lg">Batal</button><button onclick="submitDocumentation()" class="px-4 py-2 bg-indigo-600 rounded-lg">Unggah</button></div>
         </div>
     </div>
 
     <script>
-        // ======================== DATA GENERATOR DINAMIS ========================
-        // Data semua kelas (jurusan dan rombel)
-        const classData = [];
-        const jurusanList = [
-            { name: "PPLG", range: [1, 3] },
-            { name: "AKL", range: [1, 3] },
-            { name: "TMI", range: [1, 5] },
-            { name: "MPLB", range: [1, 3] }
+        // ==================== DATA GENERATOR ====================
+        const classList = [];
+        const jurusan = [{n:"PPLG",r:[1,3]},{n:"AKL",r:[1,3]},{n:"TMI",r:[1,5]},{n:"MPLB",r:[1,3]}];
+        for(let t=10; t<=12; t++) for(let j of jurusan) for(let r=j.r[0]; r<=j.r[1]; r++) classList.push(`${t} ${j.n} ${r}`);
+        classList.sort();
+        
+        // Nama asli untuk 10 PPLG 1 (35 siswa)
+        const realNames = [
+            "ABDILLAH IMNI ISMAIL AL AMIN", "AISYAH KHANZA SALSABILA", "ANNISA NUR HADI", "AYUDHIA KHAILA DAVA", "BAGUS PRATAMA HIDAYAT",
+            "BELVANA RASITA", "CARISSA TINOV ANASTACIA TAME", "CHARISA DIAN MAHRI", "DIANA ALIA SAFITRI", "DIO WAHAB ASSYIFA'A",
+            "FADLAN ABDILLAH", "FAOZAN SIGIT SAPUTRA", "FEBRYAN MAULANA", "FLOINTONA AZZAHRA", "HAFIDZ ANNAS",
+            "IDZHAR SETYA IKHWANA", "JESIKA YULIANA", "KARINA AGUSTINA RAMADHANI", "LATHIFAH LINTANG SETITI PRASE", "LOUIS ENGRASIA PUTRI",
+            "M. RAFKA FILANTARA", "MADINA AULIA HASANAH", "MUHAMAD ZIBRAN", "MUHAMMAD ANWAR IKHSAN", "MUHAMMAD FAKHRI",
+            "MUHAMMAD RAFI MUZAKI", "NAILA PEBRIA PUTRI", "NAUFAL CAHYA PRATAMA", "NOVIANA ZAHRA RAHMANI", "PRAMADYA PAMUNGKAS",
+            "RAKHA ZIDAN ARKANA", "SELVI DAMAYANTI", "SYIFA AULIA RAMADHANI", "VINOLIA CINTA NOVIZAYANTI", "ZAINAL I'LMI"
         ];
-        for (let tingkat = 10; tingkat <= 12; tingkat++) {
-            for (const jur of jurusanList) {
-                for (let rombel = jur.range[0]; rombel <= jur.range[1]; rombel++) {
-                    classData.push(`${tingkat} ${jur.name} ${rombel}`);
-                }
-            }
-        }
-        // Urutkan agar X PPLG 1 di awal
-        classData.sort((a,b) => a.localeCompare(b));
         
-        // Simpan data per kelas (dalam memory session)
-        let currentClass = "10 PPLG 1";
-        let currentUser = { name: "Siswa", nis: "001", role: "siswa" };
-        let globalMembers = [];     // anggota kelas saat ini
-        let globalSchedules = [];
-        let globalAttendance = [];
-        let globalDocumentations = [];
+        // Storage per kelas
+        let classDataStore = {};
         
-        // Fungsi generate anggota kelas (selain 10 PPLG 1: nama "Absen X")
-        function generateMembersForClass(className) {
-            const membersList = [];
-            const totalStudents = 35;
-            if (className === "10 PPLG 1") {
-                // Nama asli dari data awal
-                const realNames = [
-                    "ABDILLAH IMNI ISMAIL AL AMIN", "AISYAH KHANZA SALSABILA", "ANNISA NUR HADI", "AYUDHIA KHAILA DAVA", "BAGUS PRATAMA HIDAYAT",
-                    "BELVANA RASITA", "CARISSA TINOV ANASTACIA TAME", "CHARISA DIAN MAHRI", "DIANA ALIA SAFITRI", "DIO WAHAB ASSYIFA'A",
-                    "FADLAN ABDILLAH", "FAOZAN SIGIT SAPUTRA", "FEBRYAN MAULANA", "FLOINTONA AZZAHRA", "HAFIDZ ANNAS",
-                    "IDZHAR SETYA IKHWANA", "JESIKA YULIANA", "KARINA AGUSTINA RAMADHANI", "LATHIFAH LINTANG SETITI PRASE", "LOUIS ENGRASIA PUTRI",
-                    "M. RAFKA FILANTARA", "MADINA AULIA HASANAH", "MUHAMAD ZIBRAN", "MUHAMMAD ANWAR IKHSAN", "MUHAMMAD FAKHRI",
-                    "MUHAMMAD RAFI MUZAKI", "NAILA PEBRIA PUTRI", "NAUFAL CAHYA PRATAMA", "NOVIANA ZAHRA RAHMANI", "PRAMADYA PAMUNGKAS",
-                    "RAKHA ZIDAN ARKANA", "SELVI DAMAYANTI", "SYIFA AULIA RAMADHANI", "VINOLIA CINTA NOVIZAYANTI", "ZAINAL I'LMI"
-                ];
-                for (let i = 0; i < totalStudents; i++) {
-                    membersList.push({ id: i+1, name: realNames[i] || `Siswa ${i+1}`, jk: (i%2===0?'L':'P'), status: 'Aktif' });
-                }
+        function generateMembers(className) {
+            let members = [];
+            if(className === "10 PPLG 1") {
+                for(let i=0; i<35; i++) members.push({id:i+1, name:realNames[i], jk:i%2===0?"L":"P", status:"Aktif"});
             } else {
-                for (let i = 1; i <= totalStudents; i++) {
-                    membersList.push({ id: i, name: `Absen ${i}`, jk: i%2===0?'P':'L', status: 'Aktif' });
-                }
+                for(let i=1; i<=35; i++) members.push({id:i, name:`Absen ${i}`, jk:i%2===0?"P":"L", status:"Aktif"});
             }
-            return membersList;
+            return members;
         }
         
-        // Generate jadwal acak merata 7 per hari
-        function generateFairSchedule(membersArr) {
-            const active = membersArr.filter(m => m.status === 'Aktif');
-            const newSched = [];
-            // shuffle
-            for (let i = active.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [active[i], active[j]] = [active[j], active[i]];
-            }
-            const perDay = Math.floor(active.length / 5);
-            let remainder = active.length % 5;
-            const limits = Array(5).fill(perDay);
-            for (let i=0; i<remainder; i++) limits[i]++;
-            let idx = 0;
-            for (let day=1; day<=5; day++) {
-                for (let slot=1; slot<=limits[day-1]; slot++) {
-                    if (idx >= active.length) break;
-                    const member = active[idx];
-                    let job = 'Rapihin Bangku & Meja';
-                    if (slot === 1) job = 'Nyapu Pojok Kiri';
-                    else if (slot === 2) job = 'Nyapu Pojok Kanan';
-                    else if (slot % 2 === 0) job = 'Nganter MBG ke Masjid';
-                    newSched.push({ id: newSched.length+1, id_anggota: member.id, id_hari: day, job: job });
+        function generateSchedule(members) {
+            let active = members.filter(m=>m.status==="Aktif");
+            for(let i=active.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[active[i],active[j]]=[active[j],active[i]];}
+            let perDay = Math.floor(active.length/5), rem = active.length%5, limits = Array(5).fill(perDay);
+            for(let i=0;i<rem;i++) limits[i]++;
+            let schedules = [], idx=0;
+            let jobs = ["Nyapu Pojok Kiri","Nyapu Pojok Kanan","Rapihin Bangku & Meja","Rapihin Bangku & Meja","Nganter MBG ke Masjid","Nganter MBG ke Masjid","Nganter MBG ke Masjid"];
+            for(let day=1; day<=5; day++) {
+                for(let slot=1; slot<=limits[day-1]; slot++) {
+                    if(idx>=active.length) break;
+                    schedules.push({id:schedules.length+1, id_anggota:active[idx].id, id_hari:day, job:jobs[(slot-1)%jobs.length]});
                     idx++;
                 }
             }
-            return newSched;
+            return schedules;
         }
         
-        function initClassData(className) {
-            globalMembers = generateMembersForClass(className);
-            globalSchedules = generateFairSchedule(globalMembers);
-            globalAttendance = [];
-            globalDocumentations = [];
+        function initClass(className) {
+            if(!classDataStore[className]) {
+                let members = generateMembers(className);
+                classDataStore[className] = {
+                    members: members,
+                    schedules: generateSchedule(members),
+                    attendances: [],
+                    documentations: []
+                };
+            }
+            return classDataStore[className];
         }
         
-        // Helper render
-        function renderDashboard() {
-            renderMembers();
-            renderStats();
-            renderScheduleGrid();
-            renderTodayStatus();
-            renderDocumentations();
-        }
+        // Current state
+        let currentMode = null; // 'siswa' or 'admin'
+        let currentSiswaClass = null;
+        let currentSiswaNIS = null;
+        let currentSiswaData = null;
         
-        function renderMembers() {
-            const container = document.getElementById('members-list-container');
-            document.getElementById('member-count').innerText = globalMembers.length;
-            container.innerHTML = '';
-            globalMembers.forEach(m => {
-                const div = document.createElement('div');
-                div.className = "flex items-center justify-between p-2.5 bg-slate-950 rounded-xl border border-slate-800";
-                div.innerHTML = `<div class="flex items-center gap-2"><span class="w-6 text-center">${m.jk==='P'?'👩':'👨'}</span><span class="text-xs font-medium">${m.name}</span></div><span class="text-[9px] text-emerald-400">${m.status}</span>`;
-                container.appendChild(div);
-            });
-        }
+        // Helper functions
+        function getDayName() { const d = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']; return d[new Date().getDay()]; }
+        function getDayId(day) { const m = {'Senin':1,'Selasa':2,'Rabu':3,'Kamis':4,'Jumat':5}; return m[day]||1; }
         
-        function renderStats() {
-            const hadir = globalAttendance.filter(a => a.status === 'Hadir').length;
-            const alpa = globalAttendance.filter(a => a.status === 'Alpa').length;
-            document.getElementById('stat-hadir').innerText = hadir;
-            document.getElementById('stat-alpa').innerText = alpa;
-            document.getElementById('stat-docs').innerText = globalDocumentations.length;
-        }
-        
-        function renderScheduleGrid() {
-            const grid = document.getElementById('weekly-schedule-grid');
-            const days = ['Senin','Selasa','Rabu','Kamis','Jumat'];
-            grid.innerHTML = '';
-            for (let i=0; i<days.length; i++) {
-                const dayId = i+1;
-                const daySched = globalSchedules.filter(s => s.id_hari === dayId);
-                const col = document.createElement('div');
-                col.className = "bg-slate-950 rounded-xl border border-slate-800 p-3 space-y-2";
-                col.innerHTML = `<h4 class="text-xs font-bold text-white border-b border-slate-800 pb-1">${days[i]} <span class="text-slate-500">(${daySched.length})</span></h4>`;
-                daySched.forEach(s => {
-                    const member = globalMembers.find(m => m.id === s.id_anggota);
-                    const att = globalAttendance.find(a => a.id_anggota === s.id_anggota);
-                    const badge = att ? (att.status === 'Hadir' ? '✅' : '❌') : '⏳';
-                    col.innerHTML += `<div class="text-[11px] p-1.5 bg-slate-900 rounded-lg"><div class="flex justify-between"><span class="font-semibold truncate">${member?.name || 'Unknown'}</span><span>${badge}</span></div><div class="text-indigo-400 text-[9px]">${s.job}</div></div>`;
+        // Render Siswa Dashboard
+        function renderSiswaDashboard() {
+            let data = classDataStore[currentSiswaClass];
+            if(!data) return;
+            let myMember = data.members.find(m => m.id == currentSiswaNIS);
+            if(!myMember && currentSiswaClass !== "10 PPLG 1") myMember = data.members.find(m => m.name === `Absen ${currentSiswaNIS}`);
+            if(!myMember && currentSiswaClass === "10 PPLG 1") myMember = data.members[0];
+            
+            document.getElementById("siswaClassName").innerText = currentSiswaClass;
+            document.getElementById("siswaNameDisplay").innerHTML = `<i class="fas fa-user mr-1"></i>${myMember?.name || "Siswa"}`;
+            
+            let todayId = getDayId(getDayName());
+            let todaySched = data.schedules.filter(s=>s.id_hari===todayId);
+            let mySchedule = data.schedules.find(s=>s.id_anggota===myMember?.id);
+            
+            let hadirCount = data.attendances.filter(a=>a.status==="Hadir").length;
+            let alpaCount = data.attendances.filter(a=>a.status==="Alpa").length;
+            document.getElementById("siswaHadirCount").innerText = hadirCount;
+            document.getElementById("siswaAlpaCount").innerText = alpaCount;
+            document.getElementById("siswaTotalAnggota").innerText = data.members.length;
+            document.getElementById("siswaTotalDoc").innerText = data.documentations.length;
+            
+            // Render schedule grid
+            let days = ["Senin","Selasa","Rabu","Kamis","Jumat"];
+            let grid = document.getElementById("siswaScheduleGrid");
+            grid.innerHTML = "";
+            for(let i=0;i<5;i++) {
+                let dayId = i+1;
+                let scheds = data.schedules.filter(s=>s.id_hari===dayId);
+                let col = `<div class="bg-slate-800 rounded-xl p-3"><div class="text-xs font-bold text-indigo-400 border-b border-slate-700 pb-1 mb-2">${days[i]}</div>`;
+                scheds.forEach(s=>{
+                    let m = data.members.find(mem=>mem.id===s.id_anggota);
+                    let isMe = (m?.id === myMember?.id);
+                    col += `<div class="text-[11px] p-2 ${isMe?'bg-indigo-500/20 rounded-lg':''}"><div class="flex justify-between"><span class="${isMe?'text-indigo-300 font-bold':''}">${m?.name||"?"}</span><span class="text-[9px] text-slate-400">${s.job}</span></div></div>`;
                 });
-                grid.appendChild(col);
+                col += `</div>`;
+                grid.innerHTML += col;
+            }
+            
+            // Render documentation
+            let docGallery = document.getElementById("siswaDocGallery");
+            docGallery.innerHTML = "";
+            data.documentations.forEach(doc=>{
+                let m = data.members.find(mem=>mem.id===doc.memberId);
+                docGallery.innerHTML += `<div class="bg-slate-800 rounded-xl p-3 border border-slate-700"><img src="${doc.image}" class="w-full h-32 object-cover rounded-lg mb-2"><p class="text-xs font-semibold">${m?.name||"Siswa"}</p><p class="text-[10px] text-slate-400">${doc.job}</p><p class="text-[10px] italic">${doc.notes}</p><span class="inline-block mt-1 text-[9px] px-2 py-0.5 rounded-full ${doc.status==='Disetujui'?'bg-emerald-500/20 text-emerald-400':'bg-amber-500/20 text-amber-400'}">${doc.status}</span></div>`;
+            });
+            if(data.documentations.length===0) docGallery.innerHTML = '<p class="text-slate-500 text-sm text-center col-span-full">Belum ada dokumentasi</p>';
+        }
+        
+        // Render Admin Dashboard
+        let currentAdminClass = null;
+        let currentAdminData = null;
+        
+        function loadAdminClassData() {
+            currentAdminClass = document.getElementById("adminClassSelect").value;
+            if(!currentAdminClass) return;
+            currentAdminData = initClass(currentAdminClass);
+            document.getElementById("adminClassPanel").classList.remove("hidden");
+            renderAdminStats();
+            renderAdminMembers();
+            renderAdminSchedule();
+            renderAdminDocs();
+        }
+        
+        function renderAdminStats() {
+            if(!currentAdminData) return;
+            let hadir = currentAdminData.attendances.filter(a=>a.status==="Hadir").length;
+            let alpa = currentAdminData.attendances.filter(a=>a.status==="Alpa").length;
+            let pending = currentAdminData.documentations.filter(d=>d.status==="Pending").length;
+            document.getElementById("adminTotalSiswa").innerText = currentAdminData.members.length;
+            document.getElementById("adminTotalHadir").innerText = hadir;
+            document.getElementById("adminTotalAlpa").innerText = alpa;
+            document.getElementById("adminTotalDoc").innerText = currentAdminData.documentations.length;
+            document.getElementById("adminTotalPending").innerText = pending;
+        }
+        
+        function renderAdminMembers() {
+            let tbody = document.getElementById("adminMembersTable");
+            tbody.innerHTML = "";
+            currentAdminData.members.forEach(m=>{
+                tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="py-2">${m.id}</td><td>${m.name}</td><td>${m.jk}</td><td><span class="status-badge ${m.status==='Aktif'?'status-hadir':'status-alpa'}">${m.status}</span></td><td><button onclick="toggleMemberStatus(${m.id})" class="text-indigo-400 mr-2"><i class="fas fa-toggle-on"></i></button><button onclick="deleteMember(${m.id})" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+        }
+        
+        function renderAdminSchedule() {
+            let grid = document.getElementById("adminScheduleGrid");
+            let days = ["Senin","Selasa","Rabu","Kamis","Jumat"];
+            grid.innerHTML = "";
+            for(let i=0;i<5;i++) {
+                let dayId = i+1;
+                let scheds = currentAdminData.schedules.filter(s=>s.id_hari===dayId);
+                let col = `<div class="bg-slate-800 rounded-xl p-3"><div class="text-xs font-bold text-purple-400 border-b border-slate-700 pb-1 mb-2">${days[i]}</div>`;
+                scheds.forEach(s=>{
+                    let m = currentAdminData.members.find(mem=>mem.id===s.id_anggota);
+                    col += `<div class="text-[11px] p-1.5"><div class="flex justify-between"><span>${m?.name||"?"}</span><span class="text-[9px] text-purple-300">${s.job}</span></div></div>`;
+                });
+                col += `</div>`;
+                grid.innerHTML += col;
             }
         }
         
-        function renderTodayStatus() {
-            const todayName = getDayName();
-            document.getElementById('current-day-badge').innerText = todayName;
-            let dayId = getDayId(todayName);
-            if (dayId < 1 || dayId > 5) dayId = 1;
-            const todaySched = globalSchedules.filter(s => s.id_hari === dayId);
-            const container = document.getElementById('today-duty-list');
-            container.innerHTML = '';
-            todaySched.forEach(ts => {
-                const m = globalMembers.find(mem => mem.id === ts.id_anggota);
-                if(m) container.innerHTML += `<div class="flex justify-between text-xs py-1 border-b border-slate-800"><span>${m.name}</span><span class="text-indigo-400 text-[10px]">${ts.job.split(' ')[0]}</span></div>`;
+        function renderAdminDocs() {
+            let container = document.getElementById("adminDocList");
+            container.innerHTML = "";
+            let pendingDocs = currentAdminData.documentations.filter(d=>d.status==="Pending");
+            if(pendingDocs.length===0) { container.innerHTML = '<p class="text-slate-500 text-center py-4">Tidak ada dokumentasi yang menunggu verifikasi</p>'; return; }
+            pendingDocs.forEach(doc=>{
+                let m = currentAdminData.members.find(mem=>mem.id===doc.memberId);
+                container.innerHTML += `<div class="bg-slate-800 rounded-xl p-4 border border-slate-700 flex flex-col md:flex-row gap-4"><img src="${doc.image}" class="w-24 h-24 object-cover rounded-lg"><div class="flex-1"><p class="font-semibold">${m?.name||"Siswa"}</p><p class="text-xs text-slate-400">${doc.job} | ${doc.date}</p><p class="text-sm mt-1">${doc.notes}</p></div><div class="flex gap-2"><button onclick="verifyDoc(${doc.id}, 'Disetujui')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm"><i class="fas fa-check"></i> Setujui</button><button onclick="verifyDoc(${doc.id}, 'Ditolak')" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm"><i class="fas fa-times"></i> Tolak</button></div></div>`;
             });
         }
         
-        function renderDocumentations() {
-            const gallery = document.getElementById('documentation-gallery');
-            gallery.innerHTML = '';
-            globalDocumentations.forEach(doc => {
-                const member = globalMembers.find(m => m.id === doc.memberId);
-                gallery.innerHTML += `
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2">
-                        <img src="${doc.image}" class="w-full h-28 object-cover rounded-lg" alt="bukti">
-                        <div><p class="text-[11px] font-bold">${member?.name || 'Siswa'}</p><p class="text-[10px] text-slate-400">${doc.job}</p><p class="text-[9px] italic">${doc.notes}</p><span class="text-[9px] text-amber-400">${doc.status}</span></div>
-                    </div>
-                `;
-            });
-            if(globalDocumentations.length===0) gallery.innerHTML = '<p class="col-span-full text-center text-slate-500 text-xs">Belum ada dokumentasi</p>';
+        // Admin Actions
+        function toggleMemberStatus(id) {
+            let m = currentAdminData.members.find(mem=>mem.id===id);
+            if(m) m.status = m.status==="Aktif" ? "Cuti" : "Aktif";
+            currentAdminData.schedules = generateSchedule(currentAdminData.members);
+            renderAdminMembers();
+            renderAdminSchedule();
+            renderAdminStats();
         }
         
-        // Documentation
-        function openUploadDocModal() { document.getElementById('upload-doc-modal').classList.remove('hidden'); fillDocMemberSelect(); }
-        function closeUploadDocModal() { document.getElementById('upload-doc-modal').classList.add('hidden'); }
-        function fillDocMemberSelect() {
-            const select = document.getElementById('doc-member-select');
-            select.innerHTML = '<option value="">-- Pilih Anggota --</option>';
-            globalMembers.forEach(m => { if(m.status==='Aktif') select.innerHTML += `<option value="${m.id}">${m.name}</option>`; });
+        function deleteMember(id) {
+            currentAdminData.members = currentAdminData.members.filter(m=>m.id!==id);
+            currentAdminData.schedules = generateSchedule(currentAdminData.members);
+            renderAdminMembers();
+            renderAdminSchedule();
+            renderAdminStats();
         }
+        
+        function randomizeSchedule() {
+            currentAdminData.schedules = generateSchedule(currentAdminData.members);
+            renderAdminSchedule();
+            alert("Jadwal berhasil diacak ulang!");
+        }
+        
+        function addMember() {
+            let name = document.getElementById("newMemberName").value.trim();
+            let jk = document.getElementById("newMemberJK").value;
+            if(!name) { alert("Nama harus diisi"); return; }
+            let newId = Math.max(...currentAdminData.members.map(m=>m.id),0)+1;
+            currentAdminData.members.push({id:newId, name:name.toUpperCase(), jk:jk, status:"Aktif"});
+            currentAdminData.schedules = generateSchedule(currentAdminData.members);
+            closeAddMemberModal();
+            renderAdminMembers();
+            renderAdminSchedule();
+            renderAdminStats();
+        }
+        
+        function verifyDoc(docId, status) {
+            let doc = currentAdminData.documentations.find(d=>d.id===docId);
+            if(doc) doc.status = status;
+            renderAdminDocs();
+            renderAdminStats();
+        }
+        
+        function openAddMemberModal() { document.getElementById("addMemberModal").classList.remove("hidden"); }
+        function closeAddMemberModal() { document.getElementById("addMemberModal").classList.add("hidden"); document.getElementById("newMemberName").value = ""; }
+        
+        // Tab Admin
+        function setAdminTab(tab) {
+            document.getElementById("tabAnggota").classList.add("hidden");
+            document.getElementById("tabJadwal").classList.add("hidden");
+            document.getElementById("tabDokumentasi").classList.add("hidden");
+            document.getElementById(`tab${tab.charAt(0).toUpperCase()+tab.slice(1)}`).classList.remove("hidden");
+            let btns = ["tabAnggotaBtn","tabJadwalBtn","tabDokumentasiBtn"];
+            btns.forEach(b=>document.getElementById(b).classList.remove("tab-active","text-indigo-400"));
+            btns.forEach(b=>document.getElementById(b).classList.add("text-slate-400"));
+            document.getElementById(`tab${tab.charAt(0).toUpperCase()+tab.slice(1)}Btn`).classList.add("tab-active","text-indigo-400");
+        }
+        
+        // Upload Documentation (Siswa)
+        function openUploadModal() {
+            let data = classDataStore[currentSiswaClass];
+            let select = document.getElementById("uploadMemberId");
+            select.innerHTML = "";
+            data.members.forEach(m=>{
+                select.innerHTML += `<option value="${m.id}">${m.name}</option>`;
+            });
+            document.getElementById("uploadModal").classList.remove("hidden");
+        }
+        function closeUploadModal() { document.getElementById("uploadModal").classList.add("hidden"); }
+        
         function submitDocumentation() {
-            const memberId = parseInt(document.getElementById('doc-member-select').value);
-            const notes = document.getElementById('doc-notes').value.trim();
-            const fileInput = document.getElementById('doc-image-input');
-            if(!memberId || !notes) { alert("Lengkapi data"); return; }
-            const sched = globalSchedules.find(s => s.id_anggota === memberId) || { job: 'Petugas' };
-            const today = new Date().toISOString().split('T')[0];
-            const defaultImg = 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80';
-            const processDoc = (imgSrc) => {
-                globalDocumentations.unshift({ id: Date.now(), memberId, date: today, job: sched.job, image: imgSrc, notes: notes, status: 'Pending' });
-                closeUploadDocModal();
-                renderDashboard();
-                alert("Dokumentasi terunggah!");
+            let memberId = parseInt(document.getElementById("uploadMemberId").value);
+            let notes = document.getElementById("uploadNotes").value.trim();
+            let fileInput = document.getElementById("uploadImage");
+            let data = classDataStore[currentSiswaClass];
+            let sched = data.schedules.find(s=>s.id_anggota===memberId);
+            if(!sched) { alert("Anggota tidak memiliki jadwal piket"); return; }
+            let today = new Date().toISOString().split('T')[0];
+            let defaultImg = "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=400";
+            let process = (imgSrc) => {
+                data.documentations.unshift({id:Date.now(), memberId, date:today, job:sched.job, image:imgSrc, notes:notes, status:"Pending"});
+                closeUploadModal();
+                if(currentMode==="siswa") renderSiswaDashboard();
+                alert("Dokumentasi berhasil diunggah!");
             };
-            if(fileInput.files && fileInput.files[0]){
-                const reader = new FileReader();
-                reader.onload = e => processDoc(e.target.result);
+            if(fileInput.files && fileInput.files[0]) {
+                let reader = new FileReader();
+                reader.onload = e => process(e.target.result);
                 reader.readAsDataURL(fileInput.files[0]);
-            } else { processDoc(defaultImg); }
+            } else { process(defaultImg); }
         }
         
-        // Attendance admin bisa diakses? tapi untuk mode siswa tidak perlu admin action, cukup ditampilkan.
-        // Simulasi absensi via admin? tidak diwajibkan, fitur hanya dokumentasi. tapi agar lengkap, tidak perlu absensi manual.
-        
-        function getDayName() { const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']; return days[new Date().getDay()]; }
-        function getDayId(dayName) { const map = { 'Senin':1,'Selasa':2,'Rabu':3,'Kamis':4,'Jumat':5 }; return map[dayName] || 1; }
-        
-        // LOGIKA LOGIN SISWA
-        function loadClassOptions() {
-            const select = document.getElementById('class-select');
-            select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
-            classData.forEach(cls => {
-                select.innerHTML += `<option value="${cls}">${cls}</option>`;
+        // Login Functions
+        function populateClassSelectors() {
+            let siswaSelect = document.getElementById("studentClass");
+            let adminSelect = document.getElementById("adminClassSelect");
+            classList.forEach(c=>{
+                siswaSelect.innerHTML += `<option value="${c}">${c}</option>`;
+                adminSelect.innerHTML += `<option value="${c}">${c}</option>`;
             });
-            select.value = "10 PPLG 1";
         }
         
-        document.getElementById('btn-student-login').addEventListener('click', () => {
-            const selectedClass = document.getElementById('class-select').value;
-            const nis = document.getElementById('nis-input').value.trim();
-            if(!selectedClass) { alert("Pilih kelas terlebih dahulu!"); return; }
-            if(!nis) { alert("Masukkan NIS!"); return; }
-            currentClass = selectedClass;
-            initClassData(currentClass);
-            // set nama dashboard
-            let studentDisplayName = `Siswa (NIS: ${nis})`;
-            if(currentClass === "10 PPLG 1") {
-                const found = globalMembers.find(m => m.id == parseInt(nis));
-                if(found) studentDisplayName = found.name;
-                else studentDisplayName = `Siswa ${nis}`;
-            } else {
-                studentDisplayName = `Absen ${nis}`;
-            }
-            document.getElementById('dashboard-student-name').innerText = studentDisplayName;
-            document.getElementById('dashboard-class-badge').innerText = currentClass;
-            document.getElementById('login-main-screen').classList.add('hidden');
-            document.getElementById('dashboard-app').classList.remove('hidden');
-            renderDashboard();
-        });
-        
-        // LOGIN ADMIN
-        function openAdminLoginModal() { document.getElementById('admin-login-modal').classList.remove('hidden'); }
-        function closeAdminLoginModal() { document.getElementById('admin-login-modal').classList.add('hidden'); }
-        function submitAdminLogin() {
-            const user = document.getElementById('admin-username').value;
-            const pass = document.getElementById('admin-password').value;
-            if(user === 'admin' && pass === 'admin123') {
-                closeAdminLoginModal();
-                alert("Admin login sukses! (Mode Demo: Anda dapat melihat semua data kelas saat ini)");
-                // Untuk admin, kita beri akses penuh (bisa edit tapi tidak ada UI edit di versi ini, cukup preview)
-                // Admin dapat melihat dashboard saat ini tanpa mengubah data
-                // Tampilkan saja notif, tidak perlu role switcher rumit.
-                document.getElementById('role-badge').innerHTML = "🛡️ Admin Mode (View Only)";
-            } else { alert("Login admin gagal!"); }
+        function studentLogin() {
+            let className = document.getElementById("studentClass").value;
+            let nis = parseInt(document.getElementById("studentNIS").value);
+            if(!className) { alert("Pilih kelas terlebih dahulu!"); return; }
+            if(!nis || nis<1 || nis>35) { alert("NIS harus antara 1-35"); return; }
+            currentSiswaClass = className;
+            currentSiswaNIS = nis;
+            initClass(className);
+            currentMode = "siswa";
+            document.getElementById("loginScreen").classList.add("hidden");
+            document.getElementById("siswaDashboard").classList.remove("hidden");
+            renderSiswaDashboard();
         }
-        document.getElementById('btn-admin-login-trigger').addEventListener('click', openAdminLoginModal);
         
-        // Logout
-        document.getElementById('logout-main-btn').addEventListener('click', () => {
-            document.getElementById('dashboard-app').classList.add('hidden');
-            document.getElementById('login-main-screen').classList.remove('hidden');
-            document.getElementById('nis-input').value = '';
-            document.getElementById('class-select').value = "10 PPLG 1";
-        });
+        function adminLogin() {
+            let user = document.getElementById("adminUsername").value;
+            let pass = document.getElementById("adminPassword").value;
+            if(user==="admin" && pass==="admin123") {
+                currentMode = "admin";
+                document.getElementById("loginScreen").classList.add("hidden");
+                document.getElementById("adminDashboard").classList.remove("hidden");
+                populateClassSelectors();
+            } else { alert("Username atau password salah!"); }
+        }
         
-        // Inisialisasi opsi kelas
-        loadClassOptions();
-        // default dashboard hidden
+        function logout() {
+            document.getElementById("siswaDashboard").classList.add("hidden");
+            document.getElementById("adminDashboard").classList.add("hidden");
+            document.getElementById("loginScreen").classList.remove("hidden");
+            document.getElementById("studentNIS").value = "";
+            document.getElementById("adminUsername").value = "";
+            document.getElementById("adminPassword").value = "";
+            currentMode = null;
+        }
+        
+        // Initialize
+        populateClassSelectors();
     </script>
 </body>
 </html>
